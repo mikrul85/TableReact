@@ -3,6 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@material-ui/core": "^4.3.2",
+    "@material-ui/icons": "^4.2.1",
     "@types/jest": "^24.0.17",
     "@types/node": "^12.7.2",
     "@types/react": "^16.9.2",
@@ -10,10 +12,11 @@
     "react": "^16.9.0",
     "react-dom": "^16.9.0",
     "react-scripts": "3.1.1",
+    "save": "^2.4.0",
     "typescript": "^3.5.3"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "tsc && react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
