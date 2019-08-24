@@ -5,6 +5,7 @@ import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
+import TableSortLabel from '@material-ui/core/TableSortLabel';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
 import useStyles from "./styles";
@@ -21,8 +22,14 @@ function TableUsers (props: TableProps) {
   const [menuItem, setMenuItem] = useState('');
   const [searchValue, setSearchValue] = useState('');
   const [filteredData, setFilteredData] = useState(data);
+
+  // Hooks for sorting
+  const [order, setOrder] = useState('asc');
+  const [orderBy, setOrderBy] = useState('');
+
   const classes = useStyles()
   
+ // Methods for searching: start
   const handleClick = (event: any) => {
     setOpen(!open);
     const eventValue = event.target.innerHTML 
@@ -44,7 +51,39 @@ function TableUsers (props: TableProps) {
       return item[menuItem].toLowerCase().startsWith(searchValue.toLowerCase())
     })
     setFilteredData(resultFilter)
-  }  
+  } 
+  // Methods for searching: end
+  
+  // Methods for sorting: start
+  function handleRequestSort(property: string) {
+    const isDesc = orderBy === property && order === 'desc';
+    setOrder(isDesc ? 'asc' : 'desc');
+    setOrderBy(property);
+    onSort(order, property)
+  }
+
+  function onSort (order: string, orderBy: string ) {
+    let sortData = []
+
+    function getSorting(order: any, orderBy: any) {
+
+      return order === 'desc' ? (a: any, b: any) => desc(a, b, orderBy) : (a: any, b: any) => -desc(a, b, orderBy);
+    }
+
+    sortData = filteredData.sort(getSorting(order, orderBy))
+    return setFilteredData(sortData)
+  }
+
+  function desc(a: any, b: any, orderBy: string) {
+    if (b[orderBy] < a[orderBy]) {
+      return -1;
+    }
+    if (b[orderBy] > a[orderBy]) {
+      return 1;
+    }
+    return 0;
+  }
+  // Methods for sorting: end
 
   return (
     <Typography component="div">
@@ -80,11 +119,23 @@ function TableUsers (props: TableProps) {
             <TableRow>
               <TableCell className={classes.tableCellHead} >NAME</TableCell>
               <TableCell className={classes.tableCellHead} align="center">
+                <TableSortLabel
+                  active={orderBy === 'name'}
+                  direction={order === 'asc' ? 'asc' : 'desc'}
+                  onClick={handleRequestSort.bind(null, 'username')}
+                >
                   USERNAME
+                </TableSortLabel>
               </TableCell>
               <TableCell className={classes.tableCellHead} align="center">EMAIL</TableCell>
               <TableCell className={classes.tableCellHead} align="center">
-                  WEBSITE
+                <TableSortLabel
+                  active={orderBy === 'website'}
+                  direction={order === 'asc' ? 'asc' : 'desc'}
+                  onClick={handleRequestSort.bind(null, 'website')}
+                >
+                WEBSITE
+                </TableSortLabel>
               </TableCell>
             </TableRow>
           </TableHead>
